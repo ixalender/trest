@@ -134,12 +134,12 @@ function add_param() {
 }
 
 # @param $1 string Method
-# @param $2 string Headers
-# @param $3 string Url
+# @param $2 string Url
+# @param $3 string Headers
 function request() {
     local method=$1
-    local headers=$2
-    local url=$3
+    local url=$2
+    local headers=$3
 
     local resp=$(curl -s -X "$headers" "$method" "$url")
     
