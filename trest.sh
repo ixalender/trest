@@ -64,7 +64,7 @@ function _assert_exp() {
         prt "$descriptrion" ${COLOR_NONE} 50
     fi
     
-    if [ $expression == 1 ]; then
+    if [ "$expression" = 1 ]; then
         prt "SUCCEED" ${COLOR_GREEN} 7
     else
         prt "FAILED" ${COLOR_RED} 7
@@ -73,13 +73,24 @@ function _assert_exp() {
     prt "\n"
 }
 
+function assert_true() {
+    local desc=$2
+    local res=0
+
+    if [ "$1" -eq 1 ]; then
+        res=1
+    fi
+
+    _assert_exp $res "$desc"
+}
+
 function assert_equal() {
     local val1=$1
     local val2=$2
     local desc=$3
     local res=0
 
-    if [[ $val1 == $val2 ]]; then
+    if [ "$val1" = "$val2" ]; then
         res=1
     fi
 

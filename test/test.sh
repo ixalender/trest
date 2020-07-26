@@ -26,37 +26,36 @@ assert_equal $(get_json_data ".note.to" "$json_res") "Tove" "JSON parse"
 assert_equal $(get_json_data ".note.tasks[0].text" "$json_res") "Eat" "JSON parse first element of object list"
 
 # Assertion tests
-tasks_lenght=$(get_json_data ".note.tasks | length" "$json_res")
+tasks_length=$(get_json_data ".note.tasks | length" "$json_res")
 
-assert $tasks_lenght | gt 0 | describe "Test pipe assert | gt | describe"
-assert $tasks_lenght \
+assert $tasks_length | gt 0 | describe "Test pipe assert | gt | describe"
+assert $tasks_length \
     | ge 2 \
     | describe "Test pipe assert | ge | describe"
-assert $tasks_lenght \
+assert $tasks_length \
     | ge 1 \
     | describe "Test pipe assert | ge | describe"
-assert $tasks_lenght \
+assert $tasks_length \
     | eq 2 \
     | describe "Test pipe assert | eq | describe"
-assert $tasks_lenght \
+assert $tasks_length \
     | ne 3 \
     | describe "Test pipe assert | ne | describe"
-assert $tasks_lenght \
+assert $tasks_length \
     | lt 3 \
     | describe "Test pipe assert | lt | describe"
-assert $tasks_lenght \
+assert $tasks_length \
     | le 3 \
     | describe "Test pipe assert | le | describe"
-assert $tasks_lenght \
+assert $tasks_length \
     | le 2 \
     | describe "Test pipe assert | le | describe"
 
-assert_gt $tasks_lenght 0 "Test assert_gt"
-assert_ge $tasks_lenght 2 "Test assert_ge"
-assert_ge $tasks_lenght 1 "Test assert_ge"
-assert_lt $tasks_lenght 3 "Test assert_lt"
-assert_le $tasks_lenght 3 "Test assert_le"
-assert_le $tasks_lenght 2 "Test assert_le"
+assert_gt $tasks_length 0 "Test assert_gt"
+assert_ge $tasks_length 2 "Test assert_ge"
+assert_ge $tasks_length 1 "Test assert_ge"
+assert_lt $tasks_length 3 "Test assert_lt"
+assert_le $tasks_length 3 "Test assert_le"
+assert_le $tasks_length 2 "Test assert_le"
 
-# [ "$(build_headers ${test_headers[@]})" == "-H Header1:value1 -H Header2:value2" ] &&
-# echo "Tests OK!" && exit 0 || echo "Error on execute tests!" && exit 1
+assert_true `[ "$tasks_length" -eq 2 ] && [ "$tasks_length" -ne 3 ] && echo 1 || echo 0` "Test assert_true"
