@@ -14,8 +14,9 @@ function to_upper() {
 }
 
 # @param $1 string Text to convert
+# @param $2 string From encodding
 function to_utf8() {
-    echo $(echo "$1" | iconv -f cp1251 -t utf8)
+    echo $(echo "$1" | iconv -f $2 -t utf8)
 }
 
 # @param $1 string Text to print
@@ -45,12 +46,12 @@ function get_xml_data() {
 function get_json_data() {
     local path=$1
     local data=$2
-    echo "${data}" | jq -r $path
+    echo "${data}" | tr '\r\n' ' ' | jq -r "$path"
 }
 
 # @param $1 int Condition
 # @param $2 string Description
-function _assert() {
+function _assert_exp() {
     local expression=$1
     local descriptrion=$2
 
@@ -82,12 +83,10 @@ function assert_equal() {
         res=1
     fi
 
-    _assert $res "$desc"
+    _assert_exp $res "$desc"
 }
 
 function assert_unequal() {
-    local val1=$1
-    local val2=$2
     local desc=$3
     local res=0
 
@@ -95,7 +94,123 @@ function assert_unequal() {
         res=1
     fi
 
-    _assert $res "$desc"
+    _assert_exp $res "$desc"
+}
+
+function assert_gt() {
+    local desc=$3
+    local res=0
+
+    if [[ $1 -gt $2 ]]; then
+        res=1
+    fi
+
+    _assert_exp $res "$desc"
+}
+
+function assert_ge() {
+    local desc=$3
+    local res=0
+
+    if [[ $1 -ge $2 ]]; then
+        res=1
+    fi
+
+    _assert_exp $res "$desc"
+}
+
+function assert_lt() {
+    local desc=$3
+    local res=0
+
+    if [[ $1 -lt $2 ]]; then
+        res=1
+    fi
+
+    _assert_exp $res "$desc"
+}
+
+function assert_le() {
+    local desc=$3
+    local res=0
+
+    if [[ $1 -le $2 ]]; then
+        res=1
+    fi
+
+    _assert_exp $res "$desc"
+}
+
+# Pipeline assertion
+
+function assert() {
+    echo "$1"
+}
+
+function eq() {
+    ret=0
+    while read data; do
+        if [ $data -eq $1 ]; then
+            ret=1
+        fi
+    done
+    echo $ret
+}
+
+function ne() {
+    ret=0
+    while read data; do
+        if [ $data -ne $1 ]; then
+            ret=1
+        fi
+    done
+    echo $ret
+}
+
+function gt {
+    ret=0
+    while read data; do
+        if [ $data -gt $1 ]; then
+            ret=1
+        fi
+    done
+    echo $ret
+}
+
+function ge {
+    ret=0
+    while read data; do
+        if [ $data -ge $1 ]; then
+            ret=1
+        fi
+    done
+    echo $ret
+}
+
+function lt {
+    ret=0
+    while read data; do
+        if [ $data -lt $1 ]; then
+            ret=1
+        fi
+    done
+    echo $ret
+}
+
+function le {
+    ret=0
+    while read data; do
+        if [ $data -le $1 ]; then
+            ret=1
+        fi
+    done
+    echo $ret
+}
+
+function describe() {
+    while read data; do
+        _assert_exp $data "$1"
+    done
 }
 
 # @param $1 string Delimiter
@@ -110,7 +225,7 @@ function build_headers() {
     for h in "${headers_array[@]}"
     do
         headers_out[i++]='-H'
-        headers_out[i++]="$h"
+        headers_out[i++]="'$h'"
     done
 
     dec=$(declare -p headers_out)
@@ -136,12 +251,14 @@ function add_param() {
 # @param $1 string Method
 # @param $2 string Url
 # @param $3 string Headers
+# @param $4 string Data [xml|json]
 function request() {
     local method=$1
     local url=$2
     local headers=$3
+    local data=$4
 
-    local resp=$(curl -s -X "$headers" "$method" "$url")
+    local resp=$(curl -s -X "$method" "$url" "$headers" "$data")
     
     if [[ $resp == '' ]]; then
         prt "Unable to connect to $url\n"
