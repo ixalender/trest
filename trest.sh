@@ -161,7 +161,7 @@ function assert() {
 function eq() {
     ret=0
     while read data; do
-        if [ $data -eq $1 ]; then
+        if [ "$data" = "$1" ]; then
             ret=1
         fi
     done
@@ -171,7 +171,7 @@ function eq() {
 function ne() {
     ret=0
     while read data; do
-        if [ $data -ne $1 ]; then
+        if [ "$data" != "$1" ]; then
             ret=1
         fi
     done

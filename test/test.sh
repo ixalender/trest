@@ -23,10 +23,14 @@ assert_equal $(get_xml_data "//note/tasks/task[1]/@type" "$xml_res") "done" "XML
 fixture_url=$(host_url "file:///"$script_path"/fixtures/test.json")
 json_res="$(request "GET"  "$fixture_url")"
 assert_equal $(get_json_data ".note.to" "$json_res") "Tove" "JSON parse"
+assert_unequal $(get_json_data ".note.to" "$json_res") "John" "JSON parse"
 assert_equal $(get_json_data ".note.tasks[0].text" "$json_res") "Eat" "JSON parse first element of object list"
 
 # Assertion tests
 tasks_length=$(get_json_data ".note.tasks | length" "$json_res")
+
+assert_equal $tasks_length 2 "Test assert_equal int"
+assert_unequal $tasks_length 3 "Test assert_unequal int"
 
 assert $tasks_length | gt 0 | describe "Test pipe assert | gt | describe"
 assert $tasks_length \
@@ -37,10 +41,16 @@ assert $tasks_length \
     | describe "Test pipe assert | ge | describe"
 assert $tasks_length \
     | eq 2 \
-    | describe "Test pipe assert | eq | describe"
+    | describe "Test pipe assert | eq int | describe"
+assert $(get_xml_data "//note/to" "$xml_res") \
+    | eq "Tove" \
+    | describe "Test pipe assert | eq string | describe"
 assert $tasks_length \
     | ne 3 \
-    | describe "Test pipe assert | ne | describe"
+    | describe "Test pipe assert | ne int | describe"
+assert $(get_xml_data "//note/to" "$xml_res") \
+    | ne "John" \
+    | describe "Test pipe assert | ne string | describe"
 assert $tasks_length \
     | lt 3 \
     | describe "Test pipe assert | lt | describe"
