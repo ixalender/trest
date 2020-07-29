@@ -232,21 +232,27 @@ function describe() {
 # @param $1 string Delimiter
 function _join_by { local d=$1; shift; echo "$1"; shift; printf "%s" "${@/#/$d}"; }
 
-# @param $1 array Headers
+# Globally creates curl headers from global request_headers array
+# @note: Yeah, global is sucks, but there are no good ways to isolate this process 
+#        without breaking compatibility with old Bash versions.
 function build_headers() {
-    local headers_array=("$@")
     local idx=0
-    local headers_out=()
+    glob_curl_headers=()
 
-    for h in "${headers_array[@]}"
+    for h in "${glob_request_headers[@]}"
     do
-        headers_out[i++]='-H'
-        headers_out[i++]="'$h'"
+        glob_curl_headers[idx++]='-H'
+        glob_curl_headers[idx++]=$h
     done
 
-    dec=$(declare -p headers_out)
+    dec=$(declare -p glob_curl_headers)
     eval ${dec[@]}
-    echo $(_join_by " " ${headers_out[@]})
+}
+
+function clear_headers() {
+    glob_curl_headers=()
+    dec=$(declare -p glob_curl_headers)
+    eval ${dec[@]}
 }
 
 # @param $1 string Host
@@ -266,24 +272,23 @@ function add_param() {
 
 # @param $1 string Method
 # @param $2 string Url
-# @param $3 string Headers
-# @param $4 string Data [xml|json]
+# @param $3 string Data [xml|json]
 function request() {
     local method=$1
     local url=$2
-    local headers=$3
-    local data=$4
+    local data=$3
+    local resp=""
 
     if [ -n "$data" ]; then
-        data="-d '$data'"
+        resp=$(curl -s -d "$data" "${glob_curl_headers[@]}" -X "$method" "$url")
+    else
+        resp=$(curl -s "${glob_curl_headers[@]}" -X "$method" "$url")
     fi
-
-    local resp=$(curl -s "$data" "$headers" -X "$method" "$url")
     
     if [[ $resp == '' ]]; then
         prt "Unable to connect to $url\n"
         exit 1
     fi
-    # echo $CORE_URL > /dev/tty
+
     echo $resp
 }

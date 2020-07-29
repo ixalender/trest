@@ -4,13 +4,21 @@ cd $script_path
 source ./../trest.sh
 
 # Request params tests
-test_headers=("Header1:value1" "Content-type: application/json; charset=UTF-8")
 test_url=$(host_url "http://localhost:8080" \
     | add_param "param1=1" \
     | add_param "param2=2" \
     )
 assert_equal "$test_url" "http://localhost:8080?param1=1&param2=2&" "Url build"
-assert_equal "$(build_headers "${test_headers[@]}")" "-H 'Header1:value1' -H 'Content-type: application/json; charset=UTF-8'" "Headers build"
+
+glob_request_headers=("Header1:value1" "Content-type: application/json; charset=UTF-8")
+build_headers
+assert_equal "${glob_curl_headers[0]}" "-H" "Headers build"
+assert_equal "${glob_curl_headers[1]}" "Header1:value1" "Headers build"
+assert_equal "${glob_curl_headers[2]}" "-H" "Headers build"
+assert_equal "${glob_curl_headers[3]}" "Content-type: application/json; charset=UTF-8" "Headers build"
+
+clear_headers
+assert_equal "${glob_curl_headers[0]}" "" "Clear headers"
 
 # XML response tests
 fixture_url=$(host_url "file:///"$script_path"/fixtures/test.xml")
