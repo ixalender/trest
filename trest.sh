@@ -32,6 +32,11 @@ function prt() {
     printf "$COLOR_NONE%s" "" > /dev/tty
 }
 
+# @param $1 string Text to print as line
+function prtln() {
+    echo $1 > /dev/tty
+}
+
 # Extract result tag data from xml
 # @param $1 string Xml path (//root/child/subchild)
 # @param $2 string Xml data
@@ -269,7 +274,11 @@ function request() {
     local headers=$3
     local data=$4
 
-    local resp=$(curl -s -X "$method" "$url" "$headers" "$data")
+    if [ -n "$data" ]; then
+        data="-d '$data'"
+    fi
+
+    local resp=$(curl -s "$data" "$headers" -X "$method" "$url")
     
     if [[ $resp == '' ]]; then
         prt "Unable to connect to $url\n"
