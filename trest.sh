@@ -164,7 +164,7 @@ function assert() {
 }
 
 function eq() {
-    ret=0
+    local ret=0
     while read data; do
         if [ "$data" = "$1" ]; then
             ret=1
@@ -174,7 +174,7 @@ function eq() {
 }
 
 function ne() {
-    ret=0
+    local ret=0
     while read data; do
         if [ "$data" != "$1" ]; then
             ret=1
@@ -184,7 +184,7 @@ function ne() {
 }
 
 function gt {
-    ret=0
+    local ret=0
     while read data; do
         if [ $data -gt $1 ]; then
             ret=1
@@ -194,7 +194,7 @@ function gt {
 }
 
 function ge {
-    ret=0
+    local ret=0
     while read data; do
         if [ $data -ge $1 ]; then
             ret=1
@@ -204,7 +204,7 @@ function ge {
 }
 
 function lt {
-    ret=0
+    local ret=0
     while read data; do
         if [ $data -lt $1 ]; then
             ret=1
@@ -214,7 +214,7 @@ function lt {
 }
 
 function le {
-    ret=0
+    local ret=0
     while read data; do
         if [ $data -le $1 ]; then
             ret=1
@@ -245,13 +245,13 @@ function build_headers() {
         glob_curl_headers[idx++]=$h
     done
 
-    dec=$(declare -p glob_curl_headers)
+    local dec=$(declare -p glob_curl_headers)
     eval ${dec[@]}
 }
 
 function clear_headers() {
     glob_curl_headers=()
-    dec=$(declare -p glob_curl_headers)
+    local dec=$(declare -p glob_curl_headers)
     eval ${dec[@]}
 }
 
