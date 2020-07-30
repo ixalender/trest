@@ -1,8 +1,9 @@
 source ./trest.sh
 
 list=$(request "GET" "https://jsonplaceholder.typicode.com/posts")
-assert_gt $(get_json_data ". | length" "$list") "0" "List count test"
-assert $(get_json_data ". | length" "$list") | gt "0" | describe "List count test"
+assert_gt $(get_json_data ". | length" "$list") "0" "List count eq 0 test"
+assert $(get_json_data ". | length" "$list") | gt "0" | describe "List count gt 0 test"
+assert $(get_json_data ". | length" "$list") | lt "0" | describe "List count lt 0 test"
 
 resource=$(request \
     "GET" \
