@@ -1,6 +1,6 @@
 <p align="center"><img src="https://ixalender.com/img/trest.png" style="width: 681px;"></p>
 
-# Trest
+# TREST
 
 Tiny API test library.
 
