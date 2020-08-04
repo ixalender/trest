@@ -82,9 +82,7 @@ function assert_true() {
     local desc=$2
     local res=0
 
-    if [ "$1" -eq 1 ]; then
-        res=1
-    fi
+    [ "$1" -eq 1 ] && res=1
 
     _assert_exp $res "$desc"
 }
@@ -95,9 +93,7 @@ function assert_equal() {
     local desc=$3
     local res=0
 
-    if [ "$val1" = "$val2" ]; then
-        res=1
-    fi
+    [ "$val1" = "$val2" ] && res=1
 
     _assert_exp $res "$desc"
 }
@@ -106,9 +102,7 @@ function assert_unequal() {
     local desc=$3
     local res=0
 
-    if [[ $1 != $2 ]]; then
-        res=1
-    fi
+    [[ $1 != $2 ]] && res=1
 
     _assert_exp $res "$desc"
 }
@@ -117,9 +111,7 @@ function assert_gt() {
     local desc=$3
     local res=0
 
-    if [[ $1 -gt $2 ]]; then
-        res=1
-    fi
+    [[ $1 -gt $2 ]] && res=1
 
     _assert_exp $res "$desc"
 }
@@ -138,10 +130,8 @@ function assert_ge() {
 function assert_lt() {
     local desc=$3
     local res=0
-
-    if [[ $1 -lt $2 ]]; then
-        res=1
-    fi
+    
+    [[ $1 -lt $2 ]] && res=1
 
     _assert_exp $res "$desc"
 }
@@ -150,9 +140,7 @@ function assert_le() {
     local desc=$3
     local res=0
 
-    if [[ $1 -le $2 ]]; then
-        res=1
-    fi
+    [[ $1 -le $2 ]] && res=1
 
     _assert_exp $res "$desc"
 }
@@ -166,9 +154,7 @@ function assert() {
 function eq() {
     local ret=0
     while read data; do
-        if [ "$data" = "$1" ]; then
-            ret=1
-        fi
+        [ "$data" = "$1" ] && ret=1
     done
     echo $ret
 }
@@ -176,9 +162,7 @@ function eq() {
 function ne() {
     local ret=0
     while read data; do
-        if [ "$data" != "$1" ]; then
-            ret=1
-        fi
+        [ "$data" != "$1" ] && ret=1
     done
     echo $ret
 }
@@ -186,9 +170,7 @@ function ne() {
 function gt {
     local ret=0
     while read data; do
-        if [ $data -gt $1 ]; then
-            ret=1
-        fi
+        [ $data -gt $1 ] && ret=1
     done
     echo $ret
 }
@@ -196,19 +178,15 @@ function gt {
 function ge {
     local ret=0
     while read data; do
-        if [ $data -ge $1 ]; then
-            ret=1
-        fi
-    done
+        [ $data -ge $1 ] && ret=1
     echo $ret
+    done
 }
 
 function lt {
     local ret=0
     while read data; do
-        if [ $data -lt $1 ]; then
-            ret=1
-        fi
+        [[ $data -lt $1 ]] && ret=1
     done
     echo $ret
 }
@@ -216,9 +194,7 @@ function lt {
 function le {
     local ret=0
     while read data; do
-        if [ $data -le $1 ]; then
-            ret=1
-        fi
+        [ $data -le $1 ] && ret=1
     done
     echo $ret
 }
