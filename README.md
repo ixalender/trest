@@ -1,4 +1,4 @@
-<p align="center"><img src="https://ixalender.com/img/trest.png" style="width: 681px;"></p>
+<p align="center"><img src="https://ixalender.com/img/trest.png" style="width: 140px;"></p>
 
 # TREST
 
